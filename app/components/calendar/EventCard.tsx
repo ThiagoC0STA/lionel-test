@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useDrag } from 'react-dnd';
-import { Event, EventDragItem } from '@/app/lib/types';
-import { EVENT_TYPES, USERS } from '@/app/lib/constants';
+import { Event, EventDragItem } from '../../lib/types';
+import { EVENT_TYPES, USERS } from '../../lib/constants';
 import Image from 'next/image';
 import { ContextMenu } from '../ui/ContextMenu';
 
