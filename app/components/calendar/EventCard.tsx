@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { useDrag } from 'react-dnd';
-import { Event, EventDragItem } from '../../lib/types';
+import { Event, EventDragItem, EventIndicatorType } from '../../lib/types';
 import { EVENT_TYPES, USERS } from '../../lib/constants';
 import Image from 'next/image';
 import { ContextMenu } from '../ui/ContextMenu';
-import { Cake, Calendar, PartyPopper, Clock, Star } from 'lucide-react';
+import { Cake, Calendar, PartyPopper, Clock } from 'lucide-react';
 
 interface EventCardProps {
   event: Event;
@@ -36,14 +36,16 @@ export function EventCard({ event, onEdit, onDelete }: EventCardProps) {
   const eventTypeDetails = EVENT_TYPES[event.type];
 
   const getIndicatorIcon = () => {
-    const icons = {
-      default: <Star className="w-3 h-3" />,
+    const icons: Record<Exclude<EventIndicatorType, 'default'>, JSX.Element> = {
       birthday: <Cake className="w-3 h-3" />,
       holiday: <PartyPopper className="w-3 h-3" />,
       meeting: <Calendar className="w-3 h-3" />,
       deadline: <Clock className="w-3 h-3" />
     };
-    return icons[event.indicatorType || 'default'];
+    
+    return event.indicatorType && event.indicatorType !== 'default' 
+      ? icons[event.indicatorType as Exclude<EventIndicatorType, 'default'>] 
+      : null;
   };
 
   if (!eventTypeDetails) return null;
@@ -79,7 +81,7 @@ export function EventCard({ event, onEdit, onDelete }: EventCardProps) {
           </span>
           
           <div className="flex items-center gap-1.5">
-            {getIndicatorIcon()}
+            {event.indicatorType && event.indicatorType !== 'default' && getIndicatorIcon()}
             {user && (
               <div className="relative w-4 h-4 shrink-0">
                 <Image

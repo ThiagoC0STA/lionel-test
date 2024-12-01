@@ -2,7 +2,7 @@ import { DragItem, Event, EventIndicatorType } from "../../lib/types";
 import { EventCard } from "./EventCard";
 import { useDrop } from "react-dnd";
 import { format, isToday } from "date-fns";
-import { Cake, Calendar, PartyPopper, Clock, Star } from "lucide-react";
+import { Cake, Calendar, PartyPopper, Clock } from "lucide-react";
 import type { Ref } from "react";
 
 interface DayColumnProps {
@@ -43,11 +43,10 @@ export function DayColumn({
 
   const isCurrentDay = isToday(date);
 
-  const getIndicatorIcon = (type: EventIndicatorType = "default") => {
-    const icons = {
-      default: (
-        <Star className="w-5 h-5 text-white bg-blue-500 rounded-full p-1" />
-      ),
+  const getIndicatorIcon = (type: EventIndicatorType | undefined) => {
+    if (!type || type === 'default') return null;
+    
+    const icons: Record<Exclude<EventIndicatorType, 'default'>, JSX.Element> = {
       birthday: (
         <Cake className="w-5 h-5 text-white bg-pink-500 rounded-full p-1" />
       ),
@@ -61,7 +60,7 @@ export function DayColumn({
         <Clock className="w-5 h-5 text-white bg-red-500 rounded-full p-1" />
       ),
     };
-    return icons[type] || icons.default;
+    return icons[type];
   };
 
   return (
@@ -104,16 +103,39 @@ export function DayColumn({
         </div>
 
         {events.length > 0 && (
-          <div className="flex items-center justify-center gap-2 mt-2">
-            {events.map((event) => (
-              <div
-                key={event.id}
-                className="transition-transform hover:scale-110"
-                title={event.title}
-              >
-                {getIndicatorIcon(event.indicatorType)}
-              </div>
-            ))}
+          <div className="w-full flex items-center justify-center gap-2 mt-2 px-2">
+            {events
+              .map(event => event.indicatorType)
+              .filter((type): type is Exclude<EventIndicatorType, 'default'> => 
+                type !== undefined && type !== 'default' && !!getIndicatorIcon(type)
+              )
+              .filter((type, index, array) => 
+                array.indexOf(type) === index
+              )
+              .length > 0 && (
+                <div className="flex items-center gap-2">
+                  {events
+                    .map(event => event.indicatorType)
+                    .filter((type): type is Exclude<EventIndicatorType, 'default'> => 
+                      type !== undefined && type !== 'default' && !!getIndicatorIcon(type)
+                    )
+                    .filter((type, index, array) => 
+                      array.indexOf(type) === index
+                    )
+                    .map((type) => (
+                      <div
+                        key={type}
+                        className="transition-transform hover:scale-110"
+                        title={type.charAt(0).toUpperCase() + type.slice(1)}
+                      >
+                        {getIndicatorIcon(type)}
+                      </div>
+                    ))}
+                </div>
+            )}
+            <div className="w-5 h-5 text-xs flex items-center justify-center rounded-full bg-blue-50 text-blue-600 font-medium ml-auto">
+              {events.length}
+            </div>
           </div>
         )}
       </div>
