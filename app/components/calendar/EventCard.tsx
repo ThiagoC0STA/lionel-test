@@ -1,9 +1,11 @@
 'use client';
 
-import { useRef } from 'react';
+import { useState } from 'react';
 import { useDrag } from 'react-dnd';
-import { Event, EventType } from '../../lib/types';
-import { useContextMenu } from '@/app/hooks/useContextMenu';
+import { Event, EventDragItem } from '@/app/lib/types';
+import { EVENT_TYPES, USERS } from '@/app/lib/constants';
+import Image from 'next/image';
+import { ContextMenu } from '../ui/ContextMenu';
 
 interface EventCardProps {
   event: Event;
@@ -12,60 +14,72 @@ interface EventCardProps {
 }
 
 export function EventCard({ event, onEdit, onDelete }: EventCardProps) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  const [{ isDragging }, drag] = useDrag(() => ({
+  const [showContextMenu, setShowContextMenu] = useState(false);
+  const [contextMenuCoords, setContextMenuCoords] = useState({ x: 0, y: 0 });
+  
+  const [{ isDragging }, drag] = useDrag<EventDragItem, void, { isDragging: boolean }>(() => ({
     type: 'EVENT',
-    item: event,
+    item: { type: 'EVENT', event },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   }));
 
-  drag(ref);
-
-  const { showMenu } = useContextMenu();
-
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
-    showMenu(e, [
-      {
-        label: 'Edit',
-        onClick: () => onEdit(event),
-      },
-      {
-        label: 'Delete',
-        onClick: () => onDelete(event.id),
-      },
-    ]);
+    setContextMenuCoords({ x: e.clientX, y: e.clientY });
+    setShowContextMenu(true);
   };
+
+  const user = USERS.find(u => u.id === event.userId);
+  const eventTypeDetails = EVENT_TYPES[event.type];
+
+  if (!eventTypeDetails) return null;
 
   return (
-    <div
-      ref={ref}
-      onContextMenu={handleContextMenu}
-      className={`
-        p-2 rounded-md mb-2 cursor-move
-        ${getEventTypeColor(event.type)}
-        ${isDragging ? 'opacity-50' : 'opacity-100'}
-      `}
-    >
-      <h3 className="text-sm font-medium">{event.title}</h3>
-      <p className="text-xs">
-        {event.startTime} - {event.endTime}
-      </p>
-    </div>
-  );
-}
+    <>
+      <div
+        ref={drag as unknown as React.RefObject<HTMLDivElement>}
+        onContextMenu={handleContextMenu}
+        className={`p-2 rounded-md cursor-move ${eventTypeDetails.color} ${
+          isDragging ? 'opacity-50' : ''
+        }`}
+      >
+        <div className="flex items-center gap-2 mb-1">
+          {user && (
+            <div className="relative w-6 h-6 shrink-0">
+              <Image
+                src={user.avatar}
+                alt={user.name}
+                fill
+                className="rounded-full object-cover"
+                sizes="24px"
+                priority
+              />
+            </div>
+          )}
+          <span className="font-medium">{event.title}</span>
+        </div>
+        <div className="text-sm">
+          {event.startTime} - {event.endTime}
+        </div>
+      </div>
 
-function getEventTypeColor(type: EventType): string {
-  const colors = {
-    cuisine: 'bg-blue-500 text-white',
-    repos: 'bg-gray-500 text-white',
-    commis: 'bg-teal-500 text-white',
-    service: 'bg-orange-500 text-white',
-    accueil: 'bg-yellow-500 text-black',
-    manager: 'bg-red-500 text-white',
-  };
-  return colors[type] || 'bg-gray-200';
+      {showContextMenu && (
+        <ContextMenu
+          x={contextMenuCoords.x}
+          y={contextMenuCoords.y}
+          onClose={() => setShowContextMenu(false)}
+          onEdit={() => {
+            onEdit(event);
+            setShowContextMenu(false);
+          }}
+          onDelete={() => {
+            onDelete(event.id);
+            setShowContextMenu(false);
+          }}
+        />
+      )}
+    </>
+  );
 } 

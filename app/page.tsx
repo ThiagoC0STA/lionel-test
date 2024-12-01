@@ -5,6 +5,7 @@ import { Event } from "./lib/types";
 import { mockEvents } from "./lib/constants";
 import { Calendar } from "./components/calendar/Calendar";
 
+
 export default function Home() {
   const [events, setEvents] = useState<Event[]>(mockEvents);
 
