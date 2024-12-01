@@ -31,6 +31,12 @@ export const USERS: User[] = [
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=5",
     role: "Accueil",
   },
+  {
+    id: "6",
+    name: "Michele Wilson",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=6",
+    role: "Accueil",
+  },
 ];
 
 export const EVENT_TYPES: Record<EventType, { label: string; color: string }> =
