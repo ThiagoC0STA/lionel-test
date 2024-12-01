@@ -23,7 +23,6 @@ export default function Home() {
         case 'delete':
           return prev.filter(event => event.id !== eventData.id);
         default:
-          // Para drag and drop e outras atualizações
           return prev.map(event => 
             event.id === eventData.id ? eventData : event
           );

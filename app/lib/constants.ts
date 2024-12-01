@@ -86,26 +86,6 @@ export const mockEvents: Event[] = [
     startTime: "16:00",
     endTime: "23:00",
   },
-  // Terça (26/11)
-  {
-    id: "3",
-    title: "Commis Shift",
-    type: "commis",
-    userId: "2",
-    date: "2024-11-26",
-    startTime: "09:00",
-    endTime: "17:00",
-  },
-  {
-    id: "7",
-    title: "Evening Reception",
-    type: "accueil",
-    userId: "5",
-    date: "2024-11-26",
-    startTime: "15:00",
-    endTime: "23:00",
-  },
-  // Quarta (27/11)
   {
     id: "4",
     title: "Manager Duty",
@@ -124,7 +104,6 @@ export const mockEvents: Event[] = [
     startTime: "14:00",
     endTime: "22:00",
   },
-  // Quinta (28/11)
   {
     id: "5",
     title: "Reception",
@@ -143,7 +122,6 @@ export const mockEvents: Event[] = [
     startTime: "16:00",
     endTime: "23:00",
   },
-  // Sexta (29/11)
   {
     id: "6",
     title: "Day Off",
@@ -162,7 +140,6 @@ export const mockEvents: Event[] = [
     startTime: "07:00",
     endTime: "15:00",
   },
-  // Sábado (30/11)
   {
     id: "11",
     title: "Weekend Service",
@@ -181,7 +158,6 @@ export const mockEvents: Event[] = [
     startTime: "09:00",
     endTime: "17:00",
   },
-  // Domingo (01/12)
   {
     id: "13",
     title: "Weekend Reception",

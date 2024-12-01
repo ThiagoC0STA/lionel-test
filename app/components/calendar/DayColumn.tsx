@@ -2,7 +2,7 @@ import { DragItem, Event, EventIndicatorType } from "../../lib/types";
 import { EventCard } from "./EventCard";
 import { useDrop } from "react-dnd";
 import { format, isToday } from "date-fns";
-import { Cake, Calendar, PartyPopper, Clock, Star } from 'lucide-react';
+import { Cake, Calendar, PartyPopper, Clock, Star } from "lucide-react";
 import type { Ref } from "react";
 
 interface DayColumnProps {
@@ -14,40 +14,52 @@ interface DayColumnProps {
   onUserDrop: (userId: string, date: Date) => void;
 }
 
-export function DayColumn({ 
-  date, 
-  events, 
-  onEventUpdate, 
-  onEditEvent, 
+export function DayColumn({
+  date,
+  events,
+  onEventUpdate,
+  onEditEvent,
   onDeleteEvent,
-  onUserDrop 
+  onUserDrop,
 }: DayColumnProps) {
-  const [{ isOver }, drop] = useDrop<DragItem, void, { isOver: boolean }>(() => ({
-    accept: ['EVENT', 'USER'],
-    drop: (item) => {
-      if (item.type === 'USER' && item.userId) {
-        onUserDrop(item.userId, date);
-      } else if (item.type === 'EVENT' && item.event) {
-        onEventUpdate({
-          ...item.event,
-          date: format(date, 'yyyy-MM-dd'),
-        });
-      }
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-    }),
-  }));
+  const [{ isOver }, drop] = useDrop<DragItem, void, { isOver: boolean }>(
+    () => ({
+      accept: ["EVENT", "USER"],
+      drop: (item) => {
+        if (item.type === "USER" && item.userId) {
+          onUserDrop(item.userId, date);
+        } else if (item.type === "EVENT" && item.event) {
+          onEventUpdate({
+            ...item.event,
+            date: format(date, "yyyy-MM-dd"),
+          });
+        }
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+      }),
+    })
+  );
 
   const isCurrentDay = isToday(date);
 
-  const getIndicatorIcon = (type: EventIndicatorType = 'default') => {
+  const getIndicatorIcon = (type: EventIndicatorType = "default") => {
     const icons = {
-      default: <Star className="w-5 h-5 text-white bg-blue-500 rounded-full p-1" />,
-      birthday: <Cake className="w-5 h-5 text-white bg-pink-500 rounded-full p-1" />,
-      holiday: <PartyPopper className="w-5 h-5 text-white bg-green-500 rounded-full p-1" />,
-      meeting: <Calendar className="w-5 h-5 text-white bg-purple-500 rounded-full p-1" />,
-      deadline: <Clock className="w-5 h-5 text-white bg-red-500 rounded-full p-1" />
+      default: (
+        <Star className="w-5 h-5 text-white bg-blue-500 rounded-full p-1" />
+      ),
+      birthday: (
+        <Cake className="w-5 h-5 text-white bg-pink-500 rounded-full p-1" />
+      ),
+      holiday: (
+        <PartyPopper className="w-5 h-5 text-white bg-green-500 rounded-full p-1" />
+      ),
+      meeting: (
+        <Calendar className="w-5 h-5 text-white bg-purple-500 rounded-full p-1" />
+      ),
+      deadline: (
+        <Clock className="w-5 h-5 text-white bg-red-500 rounded-full p-1" />
+      ),
     };
     return icons[type] || icons.default;
   };
@@ -62,21 +74,28 @@ export function DayColumn({
         ${isCurrentDay ? "bg-blue-50/20" : ""}
       `}
     >
-      <div className={`
+      <div
+        className={`
         sticky top-0 z-[1]
         px-3 py-2.5
         border-b bg-white/95 backdrop-blur-sm
-      `}>
+        min-h-[80px]
+        flex flex-col justify-start items-center
+      `}
+      >
         <div className="flex items-baseline justify-center gap-3">
           <span className="text-sm font-medium text-gray-400">
             {format(date, "MMM")}
           </span>
-          <span className={`
-            ${isCurrentDay 
-              ? "w-8 h-8 flex items-center justify-center bg-blue-600 text-white rounded-full" 
-              : "text-gray-900"
+          <span
+            className={`
+            ${
+              isCurrentDay
+                ? "w-8 h-8 flex items-center justify-center bg-blue-600 text-white rounded-full"
+                : "text-gray-900"
             } text-lg font-semibold
-          `}>
+          `}
+          >
             {format(date, "d")}
           </span>
           <span className="text-sm font-medium text-gray-400">
@@ -99,21 +118,31 @@ export function DayColumn({
         )}
       </div>
 
-      <div className={`
+      <div
+        className={`
         p-2 space-y-2
         ${isOver ? "bg-blue-50/40" : ""}
         transition-all duration-200
-      `}>
+      `}
+      >
         {events.length === 0 ? (
-          <div className={`
+          <div
+            className={`
             flex flex-col items-center justify-center 
             h-20 rounded-lg border-2 border-dashed
-            ${isOver 
-              ? "border-blue-300 bg-blue-50/50" 
-              : "border-gray-200 bg-gray-50/50"}
-          `}>
-            <p className={`text-sm ${isOver ? "text-blue-500" : "text-gray-500"}`}>
-              Drop here
+            ${
+              isOver
+                ? "border-blue-300 bg-blue-50/50"
+                : "border-gray-200 bg-gray-50/50"
+            }
+          `}
+          >
+            <p
+              className={`text-sm text-center ${
+                isOver ? "text-blue-500" : "text-gray-500"
+              }`}
+            >
+              Drop a Team Member here
             </p>
           </div>
         ) : (

@@ -101,7 +101,6 @@ export function Modal({
 
   const selectedUser = USERS.find((user) => user.id === formData.userId);
 
-  // Função para obter as cores do card baseadas no tipo de evento
   const getEventColors = (eventType: EventType) => {
     const colorMap = {
       cuisine: 'bg-blue-50 hover:bg-blue-100/80',

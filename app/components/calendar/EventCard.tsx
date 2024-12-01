@@ -48,7 +48,6 @@ export function EventCard({ event, onEdit, onDelete }: EventCardProps) {
 
   if (!eventTypeDetails) return null;
 
-  // Função para obter as cores do card baseadas no tipo de evento
   const getEventColors = () => {
     const colorMap = {
       cuisine: 'bg-blue-50 hover:bg-blue-100/80',
