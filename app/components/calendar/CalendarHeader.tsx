@@ -133,7 +133,7 @@ export function CalendarHeader({
             >
               <ChevronLeft className="w-5 h-5 text-gray-600" />
             </button>
-            <div className="text-lg font-medium text-gray-900">
+            <div className="text-md font-medium text-gray-900">
               {format(startDate, "d MMMM")} -{" "}
               {format(endDate, "d MMMM yyyy")}
             </div>
