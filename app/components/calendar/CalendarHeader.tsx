@@ -16,7 +16,6 @@ import {
   Menu,
 } from "lucide-react";
 import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { useState, useRef, useEffect } from "react";
 
 interface CalendarHeaderProps {
@@ -135,8 +134,8 @@ export function CalendarHeader({
               <ChevronLeft className="w-5 h-5 text-gray-600" />
             </button>
             <div className="text-lg font-medium text-gray-900">
-              {format(startDate, "d 'de' MMMM", { locale: ptBR })} -{" "}
-              {format(endDate, "d 'de' MMMM yyyy", { locale: ptBR })}
+              {format(startDate, "d MMMM")} -{" "}
+              {format(endDate, "d MMMM yyyy")}
             </div>
             <button
               onClick={() => onNavigate("next")}

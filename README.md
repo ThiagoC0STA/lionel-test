@@ -1,36 +1,164 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Planning Screen Application
+
+A modern planning screen application built with Next.js, React, TypeScript, and TailwindCSS. This application allows users to manage and schedule events through an intuitive drag-and-drop interface.
+
+## Features
+
+- 📅 Interactive Calendar Interface
+- 🔄 Drag & Drop Event Management
+- 📝 Context Menu for Quick Actions
+- 🎯 Event Type Indicators
+- 👥 User Assignment
+- ✏️ Real-time Event Editing
+- 🎨 Visual Event Categories
+- 📱 Responsive Design
+
+## Tech Stack
+
+- **Framework**: Next.js 14
+- **Language**: TypeScript
+- **Styling**: TailwindCSS
+- **State Management**: React Hooks
+- **Drag & Drop**: React DnD
+- **UI Components**:
+  - Radix UI (Modals, Context Menus)
+  - Lucide Icons
+  - Custom Components
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/planning-screen.git
+```
+
+2. Install dependencies:
+
+```bash
+cd planning-screen
+```
+
+3. Start the development server:
+
+```bash
+npm install
+```
+
+or
+
+```bash
+yarn install
+```
+
+4. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+or
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+yarn dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+├── app/
+│   ├── components/
+│   │   ├── calendar/
+│   │   │   ├── DayColumn.tsx
+│   │   │   ├── EventCard.tsx
+│   │   │   └── Calendar.tsx
+│   │   ├── ui/
+│   │   │   ├── Modal.tsx
+│   │   │   └── ContextMenu.tsx
+│   ├── lib/
+│   │   ├── types.ts
+│   │   └── constants.ts
+│   └── page.tsx
+├── public/
+└── styles/
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Implementation Details
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Drag & Drop
+- Implemented using React DnD
+- Supports event dragging between days
+- Visual feedback during drag operations
+- Automatic data updates on drop
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Context Menu
+- Right-click activation
+- Edit and Delete options
+- Position-aware rendering
+- Keyboard navigation support
+
+### Event Management
+- Create, Edit, and Delete events
+- Visual type indicators
+- Time range selection
+- User assignment
+- Category-based styling
+
+### Data Handling
+- Mock data for demonstration
+- Real-time updates
+- Type-safe implementations
+- Persistent state management
+
+## Development Approach
+
+1. **Component Architecture**
+   - Modular design for reusability
+   - Separation of concerns
+   - Type-safe props and state
+
+2. **Styling Strategy**
+   - TailwindCSS for utility-first styling
+   - Consistent color scheme
+   - Responsive design principles
+
+3. **State Management**
+   - React hooks for local state
+   - Prop drilling minimization
+   - Efficient re-renders
+
+4. **User Experience**
+   - Smooth animations
+   - Intuitive interactions
+   - Visual feedback
+   - Error prevention
+
+## Future Improvements
+
+- [ ] Add unit tests
+- [ ] Implement search functionality
+- [ ] Add filter options
+- [ ] Improve mobile responsiveness
+- [ ] Add keyboard shortcuts
+- [ ] Implement undo/redo functionality
+
+## Author
+
+Thiago Rodrigues da Costa
+
+## Acknowledgments
+
+- Design inspiration from the provided mockup
+- Icons from Lucide Icons
+- UI components from Radix UI

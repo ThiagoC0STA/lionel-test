@@ -2,11 +2,12 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import { Event, EventType } from "@/app/lib/types";
+import { Event, EventIndicatorType, EventType } from "@/app/lib/types";
 import { EVENT_TYPES, USERS } from "@/app/lib/constants";
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import Image from 'next/image';
+import { Cake, Calendar, PartyPopper, Clock, Star } from 'lucide-react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -42,6 +43,34 @@ const getInitialFormData = (
   };
 };
 
+const EVENT_INDICATOR_TYPES = {
+  default: { 
+    label: 'Default', 
+    icon: <Star className="w-4 h-4" />,
+    color: 'text-blue-500' 
+  },
+  birthday: { 
+    label: 'Birthday', 
+    icon: <Cake className="w-4 h-4" />,
+    color: 'text-pink-500' 
+  },
+  holiday: { 
+    label: 'Holiday', 
+    icon: <PartyPopper className="w-4 h-4" />,
+    color: 'text-green-500' 
+  },
+  meeting: { 
+    label: 'Meeting', 
+    icon: <Calendar className="w-4 h-4" />,
+    color: 'text-purple-500' 
+  },
+  deadline: { 
+    label: 'Deadline', 
+    icon: <Clock className="w-4 h-4" />,
+    color: 'text-red-500' 
+  }
+} as const;
+
 export function Modal({
   isOpen,
   onClose,
@@ -71,13 +100,36 @@ export function Modal({
   };
 
   const selectedUser = USERS.find((user) => user.id === formData.userId);
-  const eventTypeDetails = EVENT_TYPES[formData.type as EventType];
+
+  // Função para obter as cores do card baseadas no tipo de evento
+  const getEventColors = (eventType: EventType) => {
+    const colorMap = {
+      cuisine: 'bg-blue-50 hover:bg-blue-100/80',
+      repos: 'bg-gray-50 hover:bg-gray-100/80',
+      commis: 'bg-teal-50 hover:bg-teal-100/80',
+      service: 'bg-orange-50 hover:bg-orange-100/80',
+      accueil: 'bg-yellow-50 hover:bg-yellow-100/80',
+      manager: 'bg-red-50 hover:bg-red-100/80',
+    };
+    return colorMap[eventType] || 'bg-gray-50 hover:bg-gray-100/80';
+  };
+
+  const getIndicatorIcon = (type: EventIndicatorType = 'default') => {
+    const icons = {
+      default: <Star className="w-3 h-3" />,
+      birthday: <Cake className="w-3 h-3" />,
+      holiday: <PartyPopper className="w-3 h-3" />,
+      meeting: <Calendar className="w-3 h-3" />,
+      deadline: <Clock className="w-3 h-3" />
+    };
+    return icons[type] || icons.default;
+  };
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg w-[500px] shadow-xl">
+        <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]" />
+        <Dialog.Content className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg w-[500px] shadow-xl z-[101]">
           <div className="flex justify-between items-center mb-6">
             <Dialog.Title className="text-xl font-semibold">
               {type === "create" ? "Create New Event" : "Edit Event"}
@@ -200,32 +252,72 @@ export function Modal({
                   />
                 </div>
               </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1.5 text-gray-700">
+                  Event Type
+                </label>
+                <div className="flex flex-wrap gap-3">
+                  {Object.entries(EVENT_INDICATOR_TYPES).map(([type, { label, icon, color }]) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => setFormData({ ...formData, indicatorType: type as EventIndicatorType })}
+                      className={`
+                        flex items-center gap-2 px-3 py-2 rounded-lg
+                        ${formData.indicatorType === type 
+                          ? `ring-2 ring-${color} bg-${color}/10` 
+                          : 'ring-1 ring-gray-200 hover:bg-gray-50'}
+                        transition-all duration-200
+                      `}
+                    >
+                      <span className={color}>{icon}</span>
+                      <span className="text-sm">{label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Preview Section */}
             {formData.title && formData.type && formData.userId && (
-              <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+              <div className="mt-6">
                 <h4 className="text-sm font-medium text-gray-700 mb-2">
                   Preview
                 </h4>
-                <div className={`p-3 rounded-md ${eventTypeDetails?.color}`}>
-                  <div className="flex items-center gap-3 mb-2">
-                    {selectedUser && (
-                      <div className="relative w-6 h-6 shrink-0">
-                        <Image
-                          src={selectedUser.avatar}
-                          alt={selectedUser.name}
-                          fill
-                          className="rounded-full object-cover"
-                          sizes="24px"
-                          priority
-                        />
-                      </div>
-                    )}
-                    <span className="font-medium">{formData.title}</span>
+                <div className={`
+                  relative p-2 rounded-lg
+                  ${getEventColors(formData.type as EventType)}
+                  transition-all duration-200
+                `}>
+                  {/* Top row with time and icons */}
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <span className="text-xs text-gray-600">
+                      {formData.startTime} - {formData.endTime}
+                    </span>
+                    
+                    <div className="flex items-center gap-1.5">
+                      {getIndicatorIcon(formData.indicatorType)}
+                      {selectedUser && (
+                        <div className="relative w-4 h-4 shrink-0">
+                          <Image
+                            src={selectedUser.avatar}
+                            alt={selectedUser.name}
+                            fill
+                            className="rounded-full object-cover"
+                            sizes="16px"
+                            priority
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-sm">
-                    {formData.startTime} - {formData.endTime}
+
+                  {/* Event Title */}
+                  <div>
+                    <p className="text-sm text-gray-700 line-clamp-2">
+                      {formData.title}
+                    </p>
                   </div>
                 </div>
               </div>

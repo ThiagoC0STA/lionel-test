@@ -68,7 +68,6 @@ export const EVENT_TYPES: Record<EventType, { label: string; color: string }> =
   };
 
 export const mockEvents: Event[] = [
-  // Segunda (25/11)
   {
     id: "1",
     title: "Cuisine Morning",
@@ -191,15 +190,6 @@ export const mockEvents: Event[] = [
     date: "2024-12-01",
     startTime: "10:00",
     endTime: "18:00",
-  },
-  {
-    id: "14",
-    title: "Kitchen Closing",
-    type: "cuisine",
-    userId: "1",
-    date: "2024-12-01",
-    startTime: "15:00",
-    endTime: "23:00",
   },
 ];
 

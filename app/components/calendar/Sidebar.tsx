@@ -8,7 +8,7 @@ interface SidebarProps {
 
 export function Sidebar({ users }: SidebarProps) {
   return (
-    <div className="w-72 h-full border-r bg-white">
+    <div className="w-60 h-full border-r bg-white">
       <div className="p-6 border-b ">
         <h2 className="text-xl font-semibold text-gray-800">Team Members</h2>
         <p className="text-sm text-gray-500 mt-1">
@@ -16,7 +16,7 @@ export function Sidebar({ users }: SidebarProps) {
         </p>
       </div>
       
-      <div className="p-4">
+      <div className="p-2">
         <div className="space-y-3">
           {users.map((user) => (
             <DraggableUser key={user.id} user={user} />

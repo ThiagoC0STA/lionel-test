@@ -1,7 +1,9 @@
-import { DragItem, Event } from "../../lib/types";
+import { DragItem, Event, EventIndicatorType } from "../../lib/types";
 import { EventCard } from "./EventCard";
 import { useDrop } from "react-dnd";
-import { format } from "date-fns";
+import { format, isToday } from "date-fns";
+import { Cake, Calendar, PartyPopper, Clock, Star } from 'lucide-react';
+import type { Ref } from "react";
 
 interface DayColumnProps {
   date: Date;
@@ -37,26 +39,100 @@ export function DayColumn({
     }),
   }));
 
+  const isCurrentDay = isToday(date);
+
+  const getIndicatorIcon = (type: EventIndicatorType = 'default') => {
+    const icons = {
+      default: <Star className="w-5 h-5 text-white bg-blue-500 rounded-full p-1" />,
+      birthday: <Cake className="w-5 h-5 text-white bg-pink-500 rounded-full p-1" />,
+      holiday: <PartyPopper className="w-5 h-5 text-white bg-green-500 rounded-full p-1" />,
+      meeting: <Calendar className="w-5 h-5 text-white bg-purple-500 rounded-full p-1" />,
+      deadline: <Clock className="w-5 h-5 text-white bg-red-500 rounded-full p-1" />
+    };
+    return icons[type] || icons.default;
+  };
+
   return (
     <div
-      ref={drop as unknown as React.RefObject<HTMLDivElement>}
-      className={`min-h-[600px] p-2 border-r ${
-        isOver ? "bg-blue-50" : "bg-white"
-      }`}
+      ref={drop as unknown as Ref<HTMLDivElement>}
+      className={`
+        relative min-h-[600px] w-full border-r
+        transition-all duration-200 ease-in-out
+        ${isOver ? "bg-blue-50/60 ring-1 ring-blue-200 ring-inset" : ""}
+        ${isCurrentDay ? "bg-blue-50/20" : ""}
+      `}
     >
-      <div className="text-sm font-medium mb-2">
-        {format(date, "EEEE, MMM d")}
+      <div className={`
+        sticky top-0 z-[1]
+        px-3 py-2.5
+        border-b bg-white/95 backdrop-blur-sm
+      `}>
+        <div className="flex items-baseline justify-center gap-3">
+          <span className="text-sm font-medium text-gray-400">
+            {format(date, "MMM")}
+          </span>
+          <span className={`
+            ${isCurrentDay 
+              ? "w-8 h-8 flex items-center justify-center bg-blue-600 text-white rounded-full" 
+              : "text-gray-900"
+            } text-lg font-semibold
+          `}>
+            {format(date, "d")}
+          </span>
+          <span className="text-sm font-medium text-gray-400">
+            {format(date, "yyyy")}
+          </span>
+        </div>
+
+        {events.length > 0 && (
+          <div className="flex items-center justify-center gap-2 mt-2">
+            {events.map((event) => (
+              <div
+                key={event.id}
+                className="transition-transform hover:scale-110"
+                title={event.title}
+              >
+                {getIndicatorIcon(event.indicatorType)}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-      <div className="space-y-2">
-        {events.map((event) => (
-          <EventCard
-            key={event.id}
-            event={event}
-            onEdit={onEditEvent}
-            onDelete={onDeleteEvent}
-          />
-        ))}
+
+      <div className={`
+        p-2 space-y-2
+        ${isOver ? "bg-blue-50/40" : ""}
+        transition-all duration-200
+      `}>
+        {events.length === 0 ? (
+          <div className={`
+            flex flex-col items-center justify-center 
+            h-20 rounded-lg border-2 border-dashed
+            ${isOver 
+              ? "border-blue-300 bg-blue-50/50" 
+              : "border-gray-200 bg-gray-50/50"}
+          `}>
+            <p className={`text-sm ${isOver ? "text-blue-500" : "text-gray-500"}`}>
+              Drop here
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-1.5">
+            {events.map((event) => (
+              <EventCard
+                key={event.id}
+                event={event}
+                onEdit={onEditEvent}
+                onDelete={onDeleteEvent}
+              />
+            ))}
+          </div>
+        )}
       </div>
+
+      {isOver && (
+        <div className="absolute inset-0 border-2 border-blue-300 border-dashed rounded-lg pointer-events-none" />
+      )}
     </div>
   );
 }

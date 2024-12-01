@@ -1,5 +1,7 @@
 export type EventType = 'cuisine' | 'repos' | 'commis' | 'service' | 'accueil' | 'manager';
 
+export type EventIndicatorType = 'default' | 'birthday' | 'holiday' | 'meeting' | 'deadline';
+
 export interface User {
   id: string;
   name: string;
@@ -16,6 +18,7 @@ export interface Event {
   startTime: string;
   endTime: string;
   _action?: 'create' | 'update' | 'delete';
+  indicatorType?: EventIndicatorType;
 }
 
 export interface ContextMenuPosition {
